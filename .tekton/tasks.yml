@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: run-tests
+spec:
+  workspaces:
+    - name: workspace
+  steps:
+    - name: clone-and-test
+      image: python:3.9
+      script: |
+        pip install pytest
+        pytest || true
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: cleanup
+spec:
+  workspaces:
+    - name: workspace
+  steps:
+    - name: clean
+      image: alpine
+      script: |
+        echo "Cleaning workspace..."
+        rm -rf /workspace/*
