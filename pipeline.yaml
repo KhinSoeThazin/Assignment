@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: cicd-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+
+  tasks:
+    - name: run-tests
+      taskRef:
+        name: run-tests
+      workspaces:
+        - name: workspace
+          workspace: shared-workspace
+
+    - name: cleanup
+      runAfter:
+        - run-tests
+      taskRef:
+        name: cleanup
+      workspaces:
+        - name: workspace
+          workspace: shared-workspace
